@@ -1,7 +1,7 @@
 import sys
-def parse() :
+def parse(file) :
    print('called parse function in packet_parser.py')
-   file_name= sys.argv[1]
+   file_name= file
    f = open(file_name, 'r')
    line_check = "Protocol Length Info"
    lines = f.readlines()
@@ -27,4 +27,4 @@ def parse() :
          while 7 < len(a):
             a[6] += " " + a[7]
             a.remove(a[7])
-
+   return metrics_arr
