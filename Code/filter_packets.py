@@ -109,3 +109,4 @@ def filter():
     for b in write_bytes:
         f.write(bytes.fromhex(b))
     f.close()
+filter()
