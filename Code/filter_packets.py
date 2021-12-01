@@ -1,10 +1,11 @@
-import sys
-
-def filter():
+def filter(path):
     print('called filter function in filter_packets.py')
 
     # read raw bytes from file into byte_array
-    filepath = sys.argv[1]
+    filepath = path
+    if not (path.endswith(".pcap")):
+        print("Error: File path '" + path + "' not .pcap format")
+        return
     byte_array = []
     with open(filepath, "rb") as myFile:
         bytes = myFile.read(1)
@@ -17,7 +18,7 @@ def filter():
     while i < 24: #get global header
         write_bytes.append(byte_array[i])
         i += 1
-    i = 40 #the first 16 bytes are the header for the first file, we're skipping that - mani
+    i = 40 #the first 16 bytes are the pcap header for the first packet, we're skipping that
     
     count = 0 # total printed packets
     tot_count = 0 # total parsed packets
@@ -104,9 +105,8 @@ def filter():
             #print(str(i))
         i += 16 #there's 16 bytes in between each packet
             
-    print(str(tot_count) + " packets parsed, "+ str(ping_count) + "/" + str(icmp_count) + "/" + str(ip_count) + " Ping/ICMP/IP packets")
-    f = open("testoutput.pcap", "wb")
+    print("Wrote to " + path[path.rfind("/")+1:-5] + "_filtered.pcap:\t" + str(tot_count) + " packets parsed, "+ str(ping_count) + "/" + str(icmp_count) + "/" + str(ip_count) + " Ping/ICMP/IP packets")
+    f = open(path[path.rfind("/")+1:-5] + "_filtered.pcap", "wb")
     for b in write_bytes:
         f.write(bytes.fromhex(b))
     f.close()
-filter()
