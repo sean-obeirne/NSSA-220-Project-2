@@ -1,12 +1,12 @@
 data size metrics (8)
--echo request/replies sent/received
--total echo request/reply frames size sent/received in bytes
+-echo request/replies sent/received **per ip address -- byte 35
+-total echo request/reply frames size sent/received in bytes **per ip address
 
 time based metrics (4)
--average ping round trip time (reply response time field on source ip average)
+-average ping round trip time (reply response time field) -- we need the pcap header :(
 -echo request/reply throughput (frame size / sum of ping rtts)
 -echo request/reply goodput (icmp payload size / sum of ping rtts)
 -reply delay (reply response time field on destination ip average)
 
 distance metric (1)
--average hop count (source TTL - destination TTL)
+-average hop count (recieved reply TTL) - byte 22
