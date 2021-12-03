@@ -1,7 +1,7 @@
 def compute(list, node):
    replies_sent = 0
    bytes = 0
-   rtt = 0
+   rtt = 1
    rttavg = 0
    req_bytes_sent = 0
    req_bytes_rec = 0
@@ -11,41 +11,43 @@ def compute(list, node):
    rep_rec = 0
    num = 0
    ip = 0
-   echo req = 45 63 68 6f 20 28 70 69 6e 67 29 20 72 65 71 75 65 73 74
+   iteration = 0
+   echo_req = "08"
    if node == 1:
-      ip = 31 39 32 2e 31 36 38 2e 31 30 30 2e 31
+      ip = "c0a86401"
    elif node == 2:
-      ip = 31 39 32 2e 31 36 38 2e 31 30 30 2e 32
+      ip = "c0a86402"
    elif node == 3:
-      ip = 31 39 32 2e 31 36 38 2e 32 30 30 2e 31
+      ip = "c0a8c801"
    else:
-      ip = 31 39 32 2e 31 36 38 2e 32 30 30 2e 32
+      ip = "c0a8c802"
    for z in list:
-      if ip in z[1]:
-         if echo req in z[4]:
+      iteration += 1
+      if ip in str(z[1]):
+         if echo_req in z[5]:
             req_sent += 1
-            req_bytes_sent += hex(z[3])
+            req_bytes_sent += int(z[3], 16)
          else: 
             rep_sent += 1
-            rtt += hex(z[0]) - hex(list[z-1][0])
+            #rtt = (int(z[0], 16) - int(list[z-1][0], 16))
       else:
-         if echo req in z[4]:
+         if echo_req in z[5]:
             req_rec +=1
-            req_bytes_rec += hex(z[3])
+            req_bytes_rec += int(z[3], 16)
          else:
             rep_rec += 1
-            rtt += hex(z[0]) - hex(list[z-1][0])
+            #rtt += int(z[0]) - int(list[z-1][0])
    rttavg = rtt / len(list)
-   print("Requests sent: " + str(requests_sent))
-   print("Request Recieved: " + str(requests_rec))
-   print("Replies Sent: " + str(replies_sent))
-   print("Replies Recieved: " + str(replies_rec))
-   print("Echo Request Bytes Sent: " + str(req_sent))
-   print("Echo Request Bytes Received: " + str(rep_rec))
-   print("Echo Request Data Sent: " + str())
-   print("Echo Request Data Recieved: " + str())
+   print("Requests sent: " + str(req_sent))
+   print("Request Recieved: " + str(req_rec))
+   print("Replies Sent: " + str(rep_sent))
+   print("Replies Recieved: " + str(rep_rec))
+   print("Echo Request Bytes Sent: " + str(req_bytes_sent))
+   print("Echo Request Bytes Received: " + str(req_bytes_rec))
+   print("Echo Request Data Sent: " + str(req_bytes_sent - (42 * req_sent)))
+   print("Echo Request Data Recieved: " + str(req_bytes_rec - (42 * req_rec)))
    print("Average RTT (ms): " + str(rttavg))
-   print("Echo Request Throughput (kB/sec): " + str())
-   print("Echo Request Goodput (kB/sec): " + str())
+   print("Echo Request Throughput (kB/sec): " + str(req_bytes_sent / rtt))
+   print("Echo Request Goodput (kB/sec): " + str(req_bytes_rec / rtt))
    print("Average Reply Delay (us): " + str())
    print("Average Echo Request Hop Count: " + str())

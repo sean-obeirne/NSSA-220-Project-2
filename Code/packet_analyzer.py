@@ -4,6 +4,6 @@ from compute_metrics import *
 
 for i in range(1, len(sys.argv)):
     filename = sys.argv[i]
-    #list = parse(filename)
     filter(filename)
-    #compute(list)
+    parsed_list = parse("Node" + str(i) + "_filtered.pcap")
+    compute(parsed_list, i)
