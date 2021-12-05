@@ -17,7 +17,7 @@ def parse(file) :
     while i < len(byte_array):
         # print("this index: " + str(i))
 
-        metrics = [0,0,0,0,0,0,0,0] 
+        metrics = [0,0,0,0,0,0,0] 
         # metrics:
         #   0 - timestamp seconds
         #   1 - timestamp milliseconds
