@@ -1,4 +1,4 @@
-def compute(list, node):
+def compute(metrics, node):
    replies_sent = 0
    bytes = 0
    rtt = 1
@@ -21,23 +21,23 @@ def compute(list, node):
       ip = "c0a8c801"
    else:
       ip = "c0a8c802"
-   for z in list:
+   for z in metrics:
       iteration += 1
-      if ip in str(z[1]):
-         if echo_req in z[5]:
+      if ip in str(z[4]):
+         if echo_req in z[6]:
             req_sent += 1
-            req_bytes_sent += int(z[3], 16)
+            req_bytes_sent += int(z[2], 16)
          else: 
             rep_sent += 1
-            #rtt = (int(z[0], 16) - int(list[z-1][0], 16))
+            #rtt = (int(z[0], 16) - int(metrics[z-1][0], 16))
       else:
-         if echo_req in z[5]:
+         if echo_req in z[6]:
             req_rec +=1
-            req_bytes_rec += int(z[3], 16)
+            req_bytes_rec += int(z[2], 16)
          else:
             rep_rec += 1
-            #rtt += int(z[0]) - int(list[z-1][0])
-   rttavg = rtt / len(list)
+            #rtt += int(z[0]) - int(metrics[z-1][0])
+   rttavg = rtt / len(metrics)
    print("Requests sent: " + str(req_sent))
    print("Request Recieved: " + str(req_rec))
    print("Replies Sent: " + str(rep_sent))
