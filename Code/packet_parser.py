@@ -1,17 +1,16 @@
 import sys
 
 def parse(file) :
-    print('called parse function in packet_parser.py')
-    check = "08"
-    check2 = "00"
-    check3 = "45"
     metrics_arr = []
     byte_array = []
-    with open(file, 'rb') as myFile:
-        byte = myFile.read(1)
+
+    # read filtered pcap
+    with open(file, 'rb') as pcap_file:
+        byte = pcap_file.read(1)
         while byte:
             byte_array.append(byte.hex())
-            byte = myFile.read(1)
+            byte = pcap_file.read(1)
+
     i = 24 # skip file header
     # print("byte_array length: " + str(len(byte_array)))
 
