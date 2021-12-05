@@ -1,9 +1,4 @@
 import sys
-def to_bin(string):
-    bits = bin(int(string,16))[2:]
-    for i in range(len(bits),8):
-        bits = "0" + bits
-    return bits
 
 def parse(file) :
     print('called parse function in packet_parser.py')
@@ -18,64 +13,76 @@ def parse(file) :
             byte_array.append(byte.hex())
             byte = myFile.read(1)
     i = 24 # skip file header
-    print("byte_array length: " + str(len(byte_array)))
+    # print("byte_array length: " + str(len(byte_array)))
+
     while i < len(byte_array):
-        print("this index: " + str(i))
-        metrics = [0,0,0,0,0,0] 
+        # print("this index: " + str(i))
+
+        metrics = [0,0,0,0,0,0,0,0] 
         # metrics:
-        #   0 - timestamp
-        #   1 - src ip
-        #   2 - dest ip
-        #   3 - bytes of entire frame
-        #   4 - 
-        #   5 - echo req / rep
-        #   6 - 
-        #   7 - 
+        #   0 - timestamp seconds
+        #   1 - timestamp milliseconds
+        #   2 - bytes of entire frame (from pcap record header)
+        #   3 - IP TTL
+        #   4 - source ip
+        #   5 - destination ip
+        #   6 - ICMP type
 
         # get seconds of epoch time
-        ts = int(byte_array[i+3] + byte_array[i+2] + byte_array[i+1] + byte_array[i], 16)
+        ts = byte_array[i+3] + byte_array[i+2] + byte_array[i+1] + byte_array[i]
+        metrics[0] = ts
         i += 4
-        # get milliseconds of epoch time
-        tms = int(byte_array[i+3] + byte_array[i+2] + byte_array[i+1] + byte_array[i], 16)
-        i += 4
-        # combine and save timestamp
-        timestamp = str(ts) + "." + str(tms)
-        metrics[0] = timestamp
 
-        pkt_len = int(byte_array[i+3] + byte_array[i+2] + byte_array[i+1] + byte_array[i], 16)
-        metrics[3] = pkt_len
+        # get milliseconds of epoch time
+        tms = byte_array[i+3] + byte_array[i+2] + byte_array[i+1] + byte_array[i]
+        metrics[1] = tms
+        i += 4
+
+        # combine and save human readable timestamp
+        # timestamp = str(int(ts,16)) + "." + str(int(tms,16))
+
+        # get frame size
+        pkt_len = byte_array[i+3] + byte_array[i+2] + byte_array[i+1] + byte_array[i]
+        metrics[2] = pkt_len
         
         i += 8 # get past pcap header
 
         i += 14 # get past ethernet header
 
+        i += 8 # get past useless part of IP header
+
+        # get TTL
+        ttl = byte_array[i]
+        metrics[3] = ttl
+        i += 4 # get past protocol and checksum in IP header
+
         # get source and destination ip
-        i += 12 # get past useless part of IP header
         src_ip = byte_array[i] + byte_array[i+1] + byte_array[i+2] + byte_array[i+3]
+        metrics[4] = src_ip
         i += 4
         dest_ip = byte_array[i] + byte_array[i+1] + byte_array[i+2] + byte_array[i+3]
+        metrics[5] = dest_ip
         i += 4
-        metrics[1] = src_ip
-        metrics[2] = dest_ip
+
+        # get icmp type
+        icmp_type = byte_array[i]
+        metrics[6] = icmp_type
+        i += 8 # get past icmp header
 
 
-        i += (pkt_len - 34)
+        i += (int(pkt_len,16) - 42) # get past icmp payload onto next packet
 
 
+        # PRINT DEBUGGING
+        # print("this timestamp: " + str(timestamp))
+        # print("this timestamp seconds: " + str(metrics[0]))
+        # print("this timestamp milliseconds: " + str(metrics[1]))
+        # print("this packet size: " + str(metrics[2]))
+        # print("this ttl: " + str(metrics[3]))
+        # print("this source ip: " + str(metrics[4]))
+        # print("this dest ip: " + str(metrics[5]))
+        # print("this icmp type: " + str(metrics[6]))
 
-        print("this timestamp: " + str(metrics[0]))
-        print("this source ip: " + str(metrics[1]))
-        print("this dest ip: " + str(metrics[2]))
-        print("this packet size: " + str(metrics[3]))
         metrics_arr.append(metrics)
 
-
-"""
-    for index, chunk in enumerate(byte_array):
-        if check in chunk and index < len(byte_array) and check2 in byte_array[index + 1] and check3 in byte_array[index + 2]:
-            metrics[3] = str(byte_array[index + 4]) + str(byte_array[index + 5])
-            metrics[4] = str(byte_array[index + 10])
-            metrics[5] = str(byte_array[index + 22])
-            metrics_arr.append(metrics)
     return metrics_arr
-"""
