@@ -35,6 +35,7 @@ def compute(metrics, node):
     num = 0
     ip = 0
     i = 0
+    f = open("NodeStats.csv", "a")
     echo_req = "08"
     if node == 1:
         ip = "c0a86401"
@@ -94,3 +95,17 @@ def compute(metrics, node):
     print("Echo Request Goodput (kB/sec): " + str( round((req_data_sent /1000) / rtt, 1) ))
     print("Average Reply Delay (us): " + str(avg_reply_delay))
     print("Average Echo Request Hop Count: " + str(avg_ttl))
+    f.write("Node " + str(node) + "\n\n")
+    f.write("Echo Requests Sent,Echo Requests Received,Echo Replies Sent,Echo Replies Received \n")
+    f.write(str(req_sent) + "," + str(req_rec) + "," + str(rep_sent) + "," + str(rep_rec) + "\n")
+    f.write("Echo Request Bytes Sent (bytes),Echo Request Data Sent (bytes) \n")
+    f.write(str(req_bytes_sent) + "," + str(req_data_sent) + "\n")
+    f.write("Echo Request Bytes Received (bytes),Echo Request Data Received (bytes) \n")
+    f.write(str(req_bytes_rec) + "," + str(req_data_rec) + "\n\n")
+    f.write("Average RTT (milliseconds)," + str(rttavg) + "\n")
+    f.write("Echo Request Throughput (kB/sec)," + str(round((req_bytes_sent/1000)/rtt, 1) ) + "\n")
+    f.write("Echo Request Goodput (kB/sec)," + str(round((req_data_sent /1000) / rtt, 1) ) + "\n")
+    f.write("Average Reply Delay (microseconds)," + str(avg_reply_delay) + "\n")
+    f.write("Average Echo Request Hop Count," + str(avg_ttl) + "\n")
+    f.write("\n")
+ 
