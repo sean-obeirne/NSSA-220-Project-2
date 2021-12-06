@@ -1,5 +1,4 @@
 def filter(path):
-    print('called filter function in filter_packets.py')
 
     # read raw bytes from file into byte_array
     filepath = path
@@ -30,27 +29,22 @@ def filter(path):
         pkt_bytes = 8 # how many bytes have been read from this packet, starting at 8 for pcap header
         # getting total packet length
         pkt_size = int("".join(reversed(["".join(byte_array[i+pkt_bytes:i+pkt_bytes+4]).split(" ")[0][j:j+2] for j in range(0,8,2)])), 16)
-        #print(pkt_size)
         pkt_bytes = 12
         pkt_size = int("".join(reversed(["".join(byte_array[i+pkt_bytes:i+pkt_bytes+4]).split(" ")[0][j:j+2] for j in range(0,8,2)])), 16)
-        #print(str(pkt_size))
         
         pkt_bytes += 16 # skip MAC addresses, get to packet type
         type_hex = byte_array[i+pkt_bytes] + byte_array[i+pkt_bytes+1]
-        if type_hex == '0800':
-            #print("IP packet found")
+        if type_hex == '0800': # IP packet found
             ip_count += 1
             # skip to protocol field
             pkt_bytes += 11
             protocol = int(byte_array[i + pkt_bytes], 16)
-            if protocol is 1:
-                #print("ICMP packet found")
+            if protocol is 1: # ICMP packet found
                 icmp_count += 1
                 pkt_bytes += 11
                 icmp_type = int(byte_array[i + pkt_bytes], 16)
-                if icmp_type is 0 or icmp_type is 8:
+                if icmp_type is 0 or icmp_type is 8: # echo message found
                     ping_count += 1
-                    #print("Echo message found")
                     for b in range(i, i+pkt_size+16):
                         # output to file to be parsed
                         write_bytes.append(byte_array[b])

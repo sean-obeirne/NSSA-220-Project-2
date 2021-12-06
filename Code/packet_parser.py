@@ -12,10 +12,8 @@ def parse(file) :
             byte = pcap_file.read(1)
 
     i = 24 # skip file header
-    # print("byte_array length: " + str(len(byte_array)))
 
     while i < len(byte_array):
-        # print("this index: " + str(i))
 
         metrics = [0,0,0,0,0,0,0] 
         # metrics:
@@ -36,9 +34,6 @@ def parse(file) :
         tms = byte_array[i+3] + byte_array[i+2] + byte_array[i+1] + byte_array[i]
         metrics[1] = tms
         i += 4
-
-        # combine and save human readable timestamp
-        # timestamp = str(int(ts,16)) + "." + str(int(tms,16))
 
         # get frame size
         pkt_len = byte_array[i+3] + byte_array[i+2] + byte_array[i+1] + byte_array[i]
@@ -71,16 +66,6 @@ def parse(file) :
 
         i += (int(pkt_len,16) - 42) # get past icmp payload onto next packet
 
-
-        # PRINT DEBUGGING
-        # print("this timestamp: " + str(timestamp))
-        # print("this timestamp seconds: " + str(metrics[0]))
-        # print("this timestamp milliseconds: " + str(metrics[1]))
-        # print("this packet size: " + str(metrics[2]))
-        # print("this ttl: " + str(metrics[3]))
-        # print("this source ip: " + str(metrics[4]))
-        # print("this dest ip: " + str(metrics[5]))
-        # print("this icmp type: " + str(metrics[6]))
 
         metrics_arr.append(metrics)
 
